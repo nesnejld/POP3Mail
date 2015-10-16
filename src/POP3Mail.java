@@ -36,6 +36,7 @@ import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.pop3.POP3Client;
 import org.apache.commons.net.pop3.POP3MessageInfo;
 import org.apache.commons.net.pop3.POP3SClient;
+import org.json.JSONObject;
 
 /**
  * This is an example program demonstrating how to use the POP3[S]Client class.
@@ -63,9 +64,9 @@ public final class POP3Mail {
 		String[] results = new String[tokens.length];
 		int i = 0;
 		for (String t : tokens) {
-			t=t.trim();
-			if(t.startsWith("\"")) {
-				t=t.substring(t.indexOf('"', 1)+1);
+			t = t.trim();
+			if (t.startsWith("\"")) {
+				t = t.substring(t.indexOf('"', 1) + 1);
 			}
 			if (t.indexOf("<") != -1) {
 				results[i] = t.substring(t.indexOf("<") + 1,
@@ -141,7 +142,12 @@ public final class POP3Mail {
 			}
 		}
 		if (d != null && d.before(dd)) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("id", id);
+			jsonObject.put("to", to);
+			jsonObject.put("from", from);
 			String[] t = parseTo(to);
+			jsonObject.put("tolist", Arrays.asList(t));
 			String ttt = "";
 			for (String tt : t) {
 				ttt += "," + tt;
@@ -151,6 +157,14 @@ public final class POP3Mail {
 			for (String ff : f) {
 				fff += "," + ff;
 			}
+			jsonObject.put("fromlist", Arrays.asList(f));
+			jsonObject.put("subject", subject);
+			jsonObject.put("date", date);
+			jsonObject.put("time", d.getTime());
+			FileWriter fileWriter = new FileWriter(String.format(
+					"json/%05d.json", id));
+			jsonObject.write(fileWriter);
+			fileWriter.close();
 			printWriter.println(String.format(
 					"%d,'%s','%s','%s','%s','%s','%s','%s',%d", id,
 					escape(from), fff.substring(1), escape(to),
@@ -260,7 +274,7 @@ public final class POP3Mail {
 				pop3.disconnect();
 				return;
 			}
-
+			new File("json").mkdirs();
 			for (POP3MessageInfo msginfo : messages) {
 				BufferedReader reader = (BufferedReader) pop3
 						.retrieveMessageTop(msginfo.number, 0);
