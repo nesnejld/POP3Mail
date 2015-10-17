@@ -162,7 +162,7 @@ public final class POP3Mail {
 			jsonObject.put("date", date);
 			jsonObject.put("time", d.getTime());
 			FileWriter fileWriter = new FileWriter(String.format(
-					"json/%05d.json", id));
+					"../json/%05d.json", id));
 			jsonObject.write(fileWriter);
 			fileWriter.close();
 			printWriter.println(String.format(
@@ -274,7 +274,7 @@ public final class POP3Mail {
 				pop3.disconnect();
 				return;
 			}
-			new File("json").mkdirs();
+			new File("../json").mkdirs();
 			for (POP3MessageInfo msginfo : messages) {
 				BufferedReader reader = (BufferedReader) pop3
 						.retrieveMessageTop(msginfo.number, 0);
