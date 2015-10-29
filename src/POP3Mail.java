@@ -161,6 +161,7 @@ public final class POP3Mail {
 			jsonObject.put("subject", subject);
 			jsonObject.put("date", date);
 			jsonObject.put("time", d.getTime());
+      jsonObject.put("reply-to", replyto);
 			FileWriter fileWriter = new FileWriter(String.format(
 					"../json/%05d.json", id));
 			jsonObject.write(fileWriter);
