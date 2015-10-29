@@ -4,3 +4,10 @@ messages.lst
 /target/
 /messages.csv
 /messages.out
+/30000.csv
+/from.lst
+/POP3Mail.out
+/process.py~
+/replyto.out
+/subjects.lst
+/test.py~

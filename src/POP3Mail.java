@@ -31,6 +31,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.pop3.POP3Client;
@@ -49,6 +51,8 @@ import org.json.JSONObject;
  * <p>
  */
 public final class POP3Mail {
+	public static Logger logger = Logger.getLogger(POP3Mail.class
+			.getCanonicalName());
 	public static final Calendar calender = Calendar.getInstance();
 	public static DateFormat dateformat = new SimpleDateFormat(
 			"dd MMM yyyy HH:mm:ss");
@@ -161,7 +165,7 @@ public final class POP3Mail {
 			jsonObject.put("subject", subject);
 			jsonObject.put("date", date);
 			jsonObject.put("time", d.getTime());
-      jsonObject.put("reply-to", replyto);
+			jsonObject.put("reply-to", replyto);
 			FileWriter fileWriter = new FileWriter(String.format(
 					"../json/%05d.json", id));
 			jsonObject.write(fileWriter);
@@ -178,6 +182,13 @@ public final class POP3Mail {
 	}
 
 	public static void main(String[] args) {
+		try {
+			LogManager.getLogManager().readConfiguration(
+					new FileInputStream("logging.properties"));
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		String server = null;
 		String username = null;
 		String password = null;
@@ -276,9 +287,15 @@ public final class POP3Mail {
 				return;
 			}
 			new File("../json").mkdirs();
+			int count = 0;
 			for (POP3MessageInfo msginfo : messages) {
 				BufferedReader reader = (BufferedReader) pop3
 						.retrieveMessageTop(msginfo.number, 0);
+				++count;
+				if (count % 100 == 0) {
+					logger.finest(String.format("%d %s", msginfo.number,
+							msginfo.identifier));
+				}
 				System.out.println(String.format("%d %s", msginfo.number,
 						msginfo.identifier));
 				if (reader == null) {
