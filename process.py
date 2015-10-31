@@ -5,6 +5,7 @@ def readmessage(f,aline) :
     lines = [] 
     line = aline[0]
     result = {}
+    result["message-id"]='<noid>'
     if line.startswith('TOP ') :
         msgnum = int(line.split(' ')[1])
         result["msgnum"]=msgnum
@@ -52,7 +53,7 @@ def readmessage(f,aline) :
                                             name='Error:'+name
                                     elif name.find('?Q?') == 0:
                                         name=name[3:name.find('?=',3)]
-                            result['fromname'] = name
+                            result['fromname'] = name.rstrip()
                         else:
                             fromuserid=value.rstrip()                            
                         result['fromuserid'] = fromuserid
@@ -72,13 +73,13 @@ for i in range(0,55):
     line = f.readline().rstrip()
     if line.startswith('TOP ') :
         break
-    print line
+#    print line
 aline = [line]
 while True:
     lines = readmessage(f,aline)
     if type(lines) == str:
         break
     if lines.has_key("fromname") :
-#        print lines["fromname"]+" "+lines["fromuserid"]+" "+str(lines["msgnum"])
+        print '"'+lines["fromname"]+'", "'+lines["fromuserid"]+'", '+str(lines["msgnum"])+', "'+lines["message-id"]+'"'
 #    print lines
         pass
