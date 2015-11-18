@@ -10,7 +10,7 @@
             </manifest>
             <fileset dir="target/classes"/>
             <zipfileset excludes="META-INF/*.SF" src="local-maven-repo/local/commons-net/3.3/commons-net-3.3.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/djensen/.m2/repository/org/json/json/20150729/json-20150729.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/Users/djensen/.m2/repository/org/json/json/20150729/json-20150729.jar"/>
         </jar>
     </target>
 </project>

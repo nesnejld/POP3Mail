@@ -271,8 +271,10 @@ public final class POP3Mail {
 			PrintWriter printWriter = new PrintWriter(new FileWriter(
 					"messages.csv"), true);
 			POP3MessageInfo[] messages = null;
+			POP3MessageInfo[] identifiers = null;
 			if (messageid == -1) {
 				messages = pop3.listMessages();
+				identifiers = pop3.listUniqueIdentifiers();
 			} else {
 				messages = new POP3MessageInfo[] { pop3.listMessage(messageid) };
 			}
@@ -289,6 +291,10 @@ public final class POP3Mail {
 			new File("../json").mkdirs();
 			int count = 0;
 			for (POP3MessageInfo msginfo : messages) {
+				if(msginfo.number!=identifiers[count].number) {
+					throw new RuntimeException();
+				}
+				msginfo.identifier=identifiers[count].identifier;
 				BufferedReader reader = (BufferedReader) pop3
 						.retrieveMessageTop(msginfo.number, 0);
 				++count;
